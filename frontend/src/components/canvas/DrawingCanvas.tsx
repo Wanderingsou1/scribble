@@ -75,7 +75,7 @@ export default function DrawingCanvas({ isDrawer, word, hint, fitHeight = false 
     <div className={`flex flex-col gap-1 w-full ${fitHeight ? "h-full min-h-0" : ""}`}>
 
       {/* Word / hint bar */}
-      <div className="bg-game-card border border-game-border rounded-xl px-2 sm:px-3 py-1.5 sm:py-2
+      <div className="paper edge-sm px-2 sm:px-3 py-1.5 sm:py-2
                       text-center min-h-[36px] sm:min-h-[44px] flex items-center justify-center shrink-0 overflow-hidden">
         {isDrawer && word
           ? <span className="text-game-accent font-game text-lg sm:text-xl md:text-2xl tracking-wider sm:tracking-widest break-all">{word}</span>
@@ -94,7 +94,7 @@ export default function DrawingCanvas({ isDrawer, word, hint, fitHeight = false 
           : "w-full shrink-0"}
       >
         <div
-          className="relative rounded-xl overflow-hidden border-2 border-game-border shadow-lg"
+          className="relative edge-md overflow-hidden border-2 border-game-border shadow-lg"
           style={fitHeight
             ? { width: canvasBox.width, height: canvasBox.height }
             : { width: "100%", aspectRatio: "8/5" }}
@@ -124,7 +124,7 @@ export default function DrawingCanvas({ isDrawer, word, hint, fitHeight = false 
 
       {/* Toolbar — drawer only */}
       {isDrawer && (
-        <div className="bg-game-card border border-game-border rounded-xl p-1.5 sm:p-2 shrink-0
+        <div className="paper edge-sm p-1.5 sm:p-2 shrink-0
                         flex flex-col sm:flex-row sm:flex-wrap gap-1.5 sm:gap-2 sm:items-center">
 
           {/* Colors — two scrollable rows on phones, wrapping grid on desktop */}

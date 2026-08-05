@@ -2,43 +2,158 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #0f3460;
-}
-::-webkit-scrollbar-thumb {
-  background: #e94560;
-  border-radius: 3px;
+/* ═══════════════════════════════════════════════════════════════════════════
+   SKRIBBL — "ink on a drawing board" design system
+   ───────────────────────────────────────────────────────────────────────────
+   One visual idea, applied everywhere: the app is a dark drawing board, and
+   every surface is a piece of paper pinned to it. Panels are hand-drawn
+   rectangles with a hard offset shadow (like a sticker), type is marker-ink,
+   and motion is loose and springy rather than mechanical.
+
+   Everything a page needs is here or in components/ui — pages should not be
+   inventing their own border/shadow/radius values.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --board:        #151a2e;
+  --board-deep:   #10131f;
+  --paper:        #1e2745;
+  --paper-hi:     #26315a;
+  --ink:          #f4f1e8;
+  --ink-soft:     #a8b0c8;
+  --ink-faint:    #6b7492;
+  --accent:       #e94560;
+  --accent-warm:  #fbbf24;
+  --accent-mint:  #4ade80;
+  --accent-sky:   #60a5fa;
+  --tape:         rgba(255, 246, 214, 0.16);
 }
 
-/* Base */
+/* ── Base ───────────────────────────────────────────────────────────────── */
+
 body {
   font-family: 'Nunito', sans-serif;
-  background-color: #1a1a2e;
-  color: white;
+  background-color: var(--board);
+  color: var(--ink);
   min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* Mobile: stop rubber-band scrolling and double-tap zoom fighting the canvas,
-   and keep horizontal scrollers from showing a scrollbar strip. */
 html, body {
   overscroll-behavior: none;
 }
-body {
-  -webkit-text-size-adjust: 100%;
-}
-.overflow-x-auto {
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-}
-.overflow-x-auto::-webkit-scrollbar {
-  height: 4px;
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
-/* Canvas touch prevention */
+/* The board itself: a soft vignette, faint graph ruling, and paper grain.
+   Fixed so it never slides while inner panes scroll. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(96, 165, 250, 0.07), transparent 60%),
+    radial-gradient(100% 80% at 50% 100%, rgba(233, 69, 96, 0.06), transparent 60%),
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: auto, auto, 26px 26px, 26px 26px;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.14;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* ── Hand-drawn geometry ────────────────────────────────────────────────────
+   Asymmetric radii read as an imperfect marker rectangle. Three weights so a
+   tiny chip and a full page panel stay in the same family. */
+
+.edge-lg   { border-radius: 22px 8px 20px 10px / 10px 20px 8px 22px; }
+.edge-md   { border-radius: 16px 7px 14px 9px / 9px 14px 7px 16px; }
+.edge-sm   { border-radius: 11px 5px 9px 6px / 6px 9px 5px 11px; }
+.edge-pill { border-radius: 999px 999px 999px 999px / 999px 999px 999px 999px; }
+
+/* ── Surfaces ───────────────────────────────────────────────────────────── */
+
+.paper {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0) 40%),
+    var(--paper);
+  border: 2px solid rgba(244, 241, 232, 0.13);
+  box-shadow:
+    4px 5px 0 rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Recessed area inside a panel — inputs, wells, lists. */
+.well {
+  background: rgba(0, 0, 0, 0.24);
+  border: 2px solid rgba(244, 241, 232, 0.09);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Two strips of masking tape holding a panel to the board. */
+.taped::before,
+.taped::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 68px;
+  height: 22px;
+  background: var(--tape);
+  border-left: 1px dashed rgba(255, 246, 214, 0.28);
+  border-right: 1px dashed rgba(255, 246, 214, 0.28);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
+  pointer-events: none;
+  z-index: 2;
+}
+.taped::before { left: 22px;  transform: rotate(-5deg); }
+.taped::after  { right: 22px; transform: rotate(4deg); }
+
+/* ── Type ───────────────────────────────────────────────────────────────── */
+
+.marker-underline {
+  position: relative;
+  display: inline-block;
+}
+.marker-underline::after {
+  content: "";
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: -0.24em;
+  height: 0.3em;
+  background: currentColor;
+  opacity: 0.22;
+  border-radius: 60% 40% 55% 45% / 100% 100% 60% 60%;
+  transform: rotate(-0.7deg);
+}
+
+/* ── Scrollbars, in keeping ─────────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 8px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+::-webkit-scrollbar-thumb {
+  background: rgba(233, 69, 96, 0.65);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.overflow-x-auto { -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+
+/* ── Canvas ─────────────────────────────────────────────────────────────── */
+
 canvas {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
@@ -46,8 +161,80 @@ canvas {
   touch-action: none;
 }
 
-/* Smooth transitions everywhere */
+/* ═══ Motion ════════════════════════════════════════════════════════════════
+   All transform/opacity so it stays on the compositor and phones hold 60fps.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
+}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50%      { transform: translateY(-13px) rotate(1.5deg); }
+}
+@keyframes popIn {
+  0%   { transform: scale(0.84) translateY(16px); opacity: 0; }
+  62%  { transform: scale(1.03) translateY(-3px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+@keyframes slideIn {
+  0%   { transform: translateY(14px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes jitter {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25%      { transform: translate(0.7px, -0.7px) rotate(0.4deg); }
+  75%      { transform: translate(-0.7px, 0.7px) rotate(-0.4deg); }
+}
+@keyframes inkDraw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes shimmer {
+  0%   { background-position: -150% 0; }
+  100% { background-position: 250% 0; }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+
+.anim-wiggle { animation: wiggle 3.4s ease-in-out infinite; }
+.anim-floaty { animation: floaty 5s ease-in-out infinite; }
+.anim-pop    { animation: popIn 0.5s cubic-bezier(0.22, 1.2, 0.36, 1) both; }
+.anim-slide  { animation: slideIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-jitter { animation: jitter 0.5s steps(2, end) infinite; }
+.anim-breathe { animation: breathe 2.6s ease-in-out infinite; }
+
+/* Self-drawing SVG stroke — set --len to roughly the path length. */
+.ink-draw {
+  stroke-dasharray: var(--len, 400);
+  stroke-dashoffset: var(--len, 400);
+  animation: inkDraw 1.8s ease-in-out forwards;
+}
+
+/* Staggered entrances: parent gets .stagger, children get .anim-pop/.anim-slide */
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger > *:nth-child(3) { animation-delay: 0.16s; }
+.stagger > *:nth-child(4) { animation-delay: 0.22s; }
+.stagger > *:nth-child(5) { animation-delay: 0.28s; }
+.stagger > *:nth-child(6) { animation-delay: 0.34s; }
+.stagger > *:nth-child(7) { animation-delay: 0.40s; }
+.stagger > *:nth-child(8) { animation-delay: 0.46s; }
+
+/* Only colour/border transition globally — never layout properties. */
 * {
-  transition-property: color, background-color, border-color;
+  transition-property: color, background-color, border-color, box-shadow;
   transition-duration: 150ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ink-draw { stroke-dashoffset: 0; }
 }
