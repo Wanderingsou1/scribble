@@ -31,7 +31,7 @@ export default function PlayerList({
         return (
           <div
             key={player.id}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+            className={`flex items-center gap-2 px-3 py-2 edge-sm border transition-all ${
               isDrawing
                 ? "border-game-accent bg-game-accent/10 animate-pulse-glow"
                 : "border-game-border bg-game-card"

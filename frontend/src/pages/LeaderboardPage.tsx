@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SceneryCanvas from "../components/ui/SceneryCanvas";
 
 const BACKEND = (
   ((import.meta as any).env?.VITE_BACKEND_URL as string) ||
@@ -52,10 +53,11 @@ export default function LeaderboardPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-game-bg py-8 px-4">
+    <div className="relative min-h-screen py-8 px-4">
+      <SceneryCanvas density="low" />
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
           <button
             onClick={() => navigate("/")}
             className="text-gray-400 hover:text-white text-sm border border-game-border px-3 py-1.5 rounded-lg transition-all hover:border-white"
@@ -63,7 +65,7 @@ export default function LeaderboardPage() {
             ← Back
           </button>
           <div>
-            <h1 className="font-game text-game-accent text-3xl">
+            <h1 className="font-game text-game-accent text-xl sm:text-3xl">
               🏆 Leaderboard
             </h1>
             {since && (
@@ -73,15 +75,13 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Period tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-4 sm:mb-6">
           {(["alltime", "weekly"] as Period[]).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-5 py-2 rounded-xl font-game text-sm transition-all ${
-                period === p
-                  ? "bg-game-accent text-white shadow-lg scale-105"
-                  : "bg-game-card border border-game-border text-gray-400 hover:text-white"
+              className={`px-5 py-2 edge-md font-game text-sm transition-all ${ period === p ? "bg-game-accent text-white shadow-lg scale-105"
+                  : "paper text-gray-400 hover:text-white"
               }`}
             >
               {p === "alltime" ? "🌍 All Time" : "📅 This Week"}
@@ -102,8 +102,8 @@ export default function LeaderboardPage() {
 
         {!loading && !error && entries.length === 0 && (
           <div className="text-center py-16">
-            <div className="text-5xl mb-3">🏜️</div>
-            <p className="text-gray-400 font-game text-lg">No scores yet</p>
+            <div className="text-3xl sm:text-5xl mb-3">🏜️</div>
+            <p className="text-gray-400 font-game text-sm sm:text-lg">No scores yet</p>
             <p className="text-gray-500 text-sm mt-1">
               {period === "weekly"
                 ? "Play some games this week!"
@@ -117,9 +117,7 @@ export default function LeaderboardPage() {
             {entries.map((entry) => (
               <div
                 key={entry.id}
-                className={`flex items-center gap-4 rounded-xl px-4 py-3 border transition-all ${
-                  entry.rank === 1
-                    ? "bg-yellow-600/10 border-yellow-600/40"
+                className={`flex items-center gap-2.5 sm:gap-4 edge-md px-4 py-2.5 sm:py-3 border transition-all ${ entry.rank === 1 ? "bg-yellow-600/10 border-yellow-600/40"
                     : entry.rank === 2
                       ? "bg-gray-400/10 border-gray-400/30"
                       : entry.rank === 3
@@ -130,7 +128,7 @@ export default function LeaderboardPage() {
                 {/* Rank */}
                 <div className="w-8 text-center shrink-0">
                   {entry.rank <= 3 ? (
-                    <span className="text-xl">{MEDALS[entry.rank - 1]}</span>
+                    <span className="text-base sm:text-xl">{MEDALS[entry.rank - 1]}</span>
                   ) : (
                     <span className="text-gray-500 font-bold text-sm">
                       {entry.rank}
@@ -139,7 +137,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 {/* Avatar */}
-                <div className="w-10 h-10 rounded-full bg-game-bg flex items-center justify-center text-xl border border-game-border shrink-0">
+                <div className="w-10 h-10 rounded-full bg-game-bg flex items-center justify-center text-base sm:text-xl border border-game-border shrink-0">
                   {entry.avatar}
                 </div>
 
@@ -148,7 +146,7 @@ export default function LeaderboardPage() {
                   <div className="font-bold text-white text-sm truncate">
                     {entry.nickname}
                   </div>
-                  <div className="flex gap-3 text-xs text-gray-500 mt-0.5 flex-wrap">
+                  <div className="flex gap-2 sm:gap-3 text-xs text-gray-500 mt-0.5 flex-wrap">
                     <span>🎮 {entry.gamesPlayed} games</span>
                     <span>🏆 {entry.wins} wins</span>
                     <span>⭐ Best: {entry.bestScore}</span>
@@ -158,9 +156,7 @@ export default function LeaderboardPage() {
                 {/* Total score */}
                 <div className="text-right shrink-0">
                   <div
-                    className={`font-game font-bold text-lg ${
-                      entry.rank === 1
-                        ? "text-yellow-400"
+                    className={`font-game font-bold text-sm sm:text-lg ${ entry.rank === 1 ? "text-yellow-400"
                         : entry.rank === 2
                           ? "text-gray-300"
                           : entry.rank === 3

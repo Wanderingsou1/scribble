@@ -64,7 +64,7 @@ export default function ChatPanel({ isDrawer = false }: ChatPanelProps) {
     : isDrawing ? "Type your guess…" : "Chat…";
 
   return (
-    <div className="flex flex-col h-full bg-game-card border border-game-border rounded-xl overflow-hidden">
+    <div className="flex flex-col h-full paper edge-md overflow-hidden">
       {/* Header */}
       <div className="px-3 py-1.5 bg-game-bg border-b border-game-border shrink-0">
         <h3 className="font-game text-white text-sm">
@@ -94,7 +94,7 @@ export default function ChatPanel({ isDrawer = false }: ChatPanelProps) {
           enterKeyHint="send"
           /* text-base (16px) on phones — anything smaller makes iOS Safari
              zoom the whole page in when the field is focused. */
-          className="flex-1 min-w-0 bg-game-bg border border-game-border rounded-lg px-3 py-2 sm:py-1.5 text-white text-base sm:text-sm placeholder-gray-500 focus:outline-none focus:border-game-accent transition-colors"
+          className="flex-1 min-w-0 well edge-sm px-3 py-2 sm:py-1.5 text-white text-base sm:text-sm placeholder-gray-500 focus:outline-none focus:border-game-accent transition-colors"
         />
         <button
           type="submit"

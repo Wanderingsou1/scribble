@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGame } from "../contexts/GameContext";
+import SceneryCanvas from "../components/ui/SceneryCanvas";
 
 const BACKEND = (
   ((import.meta as any).env?.VITE_BACKEND_URL as string) ||
@@ -59,17 +60,18 @@ export default function MatchHistoryPage() {
   }, [playerId]);
 
   return (
-    <div className="min-h-screen bg-game-bg py-8 px-4">
+    <div className="relative min-h-screen py-8 px-4">
+      <SceneryCanvas density="low" />
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
           <button
             onClick={() => navigate(-1)}
             className="text-gray-400 hover:text-white text-sm border border-game-border px-3 py-1.5 rounded-lg transition-all"
           >
             ← Back
           </button>
-          <h1 className="font-game text-game-accent text-3xl">
+          <h1 className="font-game text-game-accent text-xl sm:text-3xl">
             📜 Match History
           </h1>
         </div>
@@ -85,8 +87,8 @@ export default function MatchHistoryPage() {
 
         {!loading && !error && records.length === 0 && (
           <div className="text-center py-16">
-            <div className="text-5xl mb-3">🎮</div>
-            <p className="text-gray-400 font-game text-lg">
+            <div className="text-3xl sm:text-5xl mb-3">🎮</div>
+            <p className="text-gray-400 font-game text-sm sm:text-lg">
               No games played yet
             </p>
             <p className="text-gray-500 text-sm mt-1">
@@ -94,14 +96,14 @@ export default function MatchHistoryPage() {
             </p>
             <button
               onClick={() => navigate("/")}
-              className="mt-4 px-6 py-2 bg-game-accent text-white font-game rounded-xl hover:bg-red-500 transition-all"
+              className="mt-4 px-4 sm:px-6 py-2 bg-game-accent text-white font-game border-2 border-[#ff6b81] shadow-[3px_4px_0_rgba(0,0,0,0.35)] edge-md hover:bg-red-500 transition-all"
             >
               Play Now
             </button>
           </div>
         )}
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2 sm:gap-3">
           {records.map((record, idx) => {
             const myEntry = record.players.find((p) => p.id === playerId);
             const isWinner = record.winner?.id === playerId;
@@ -113,15 +115,14 @@ export default function MatchHistoryPage() {
             return (
               <div
                 key={record.gameId || idx}
-                className={`bg-game-card border rounded-xl p-4 transition-all ${
-                  isWinner ? "border-yellow-600/50" : "border-game-border"
+                className={`bg-game-card border edge-md p-3 sm:p-4 transition-all ${ isWinner ? "border-yellow-600/50" : "border-game-border"
                 }`}
               >
                 {/* Top row */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     {isWinner && (
-                      <span className="text-yellow-400 text-lg">🏆</span>
+                      <span className="text-yellow-400 text-sm sm:text-lg">🏆</span>
                     )}
                     <div>
                       <div className="text-white font-bold text-sm">
@@ -140,7 +141,7 @@ export default function MatchHistoryPage() {
                   </div>
                   <div className="text-right">
                     <div
-                      className={`font-game font-bold text-xl ${isWinner ? "text-yellow-400" : "text-white"}`}
+                      className={`font-game font-bold text-base sm:text-xl ${isWinner ? "text-yellow-400" : "text-white"}`}
                     >
                       {myEntry?.score.toLocaleString() ?? "—"}
                     </div>
@@ -155,9 +156,7 @@ export default function MatchHistoryPage() {
                     .map((p, i) => (
                       <div
                         key={p.id}
-                        className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs border ${
-                          p.id === playerId
-                            ? "border-game-accent bg-game-accent/10 text-white font-bold"
+                        className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs border ${ p.id === playerId ? "border-game-accent bg-game-accent/10 text-white font-bold"
                             : "border-game-border text-gray-400"
                         }`}
                       >

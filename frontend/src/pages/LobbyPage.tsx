@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useGame } from "../contexts/GameContext";
 import { getSocket } from "../utils/socket";
 import { avatarBgColor } from "../utils/avatars";
+import SceneryCanvas from "../components/ui/SceneryCanvas";
 
 export default function LobbyPage() {
   const navigate = useNavigate();
@@ -107,22 +108,23 @@ export default function LobbyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-game-bg flex items-center justify-center p-4">
-      <div className="bg-game-card border border-game-border rounded-2xl p-4 sm:p-8 w-full max-w-2xl shadow-2xl">
+    <div className="relative min-h-screen flex items-center justify-center p-3 sm:p-4">
+      <SceneryCanvas density="low" />
+      <div className="paper edge-lg taped relative anim-pop p-4 sm:p-8 w-full max-w-2xl shadow-2xl">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button onClick={() => { fullReset(); navigate("/"); }}
               className="text-gray-400 hover:text-red-400 text-sm border border-game-border hover:border-red-500 px-2 py-1 rounded-lg transition-all">
               ← Exit
             </button>
             <div>
-              <h1 className="font-game text-game-accent text-3xl">
+              <h1 className="font-game text-game-accent text-xl sm:text-3xl">
                 {room.status === "finished" ? "Play Again?" : "Lobby"}
               </h1>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <span className="font-game text-white text-xl tracking-widest bg-game-bg px-3 py-0.5 rounded-lg border border-game-border">
+                <span className="font-game text-white text-base sm:text-xl tracking-widest bg-game-bg px-3 py-0.5 rounded-lg border border-game-border">
                   {room.roomCode}
                 </span>
                 {(room.settings as any).hasPasscode && isHost && passcode && (
@@ -135,9 +137,7 @@ export default function LobbyPage() {
                     </span>
                     <button
                       onClick={copyPasscode}
-                      className={`text-xs px-2 py-1 rounded border font-semibold transition-all ${
-                        copiedPasscode
-                          ? "bg-green-600/20 border-green-500 text-green-400"
+                      className={`text-xs px-2 py-1 rounded border font-semibold transition-all ${ copiedPasscode ? "bg-green-600/20 border-green-500 text-green-400"
                           : "border-yellow-800 text-yellow-500 hover:border-yellow-400"
                       }`}
                     >
@@ -149,8 +149,7 @@ export default function LobbyPage() {
                   <span className="text-xs bg-yellow-900/40 text-yellow-400 px-2 py-0.5 rounded border border-yellow-800">🔒 Passcode required</span>
                 )}
                 <button onClick={copyLink}
-                  className={`text-xs px-3 py-1.5 rounded-lg border font-semibold transition-all ${
-                    copied ? "bg-green-600/20 border-green-500 text-green-400" : "bg-game-bg border-game-border text-gray-400 hover:border-game-accent hover:text-game-accent"
+                  className={`text-xs px-3 py-1.5 rounded-lg border font-semibold transition-all ${ copied ? "bg-green-600/20 border-green-500 text-green-400" : "bg-game-bg border-game-border text-gray-400 hover:border-game-accent hover:text-game-accent"
                   }`}>
                   {copied ? "✅ Copied!" : "📋 Invite Link"}
                 </button>
@@ -168,18 +167,17 @@ export default function LobbyPage() {
         </div>
 
         {/* Players grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
           {room.players.filter(p => p.isConnected).map(player => {
             const isMe = player.id === playerId;
             const isPlayerHost = player.id === room.hostId;
             const isSpectator = player.role === "spectator";
             return (
               <div key={player.id}
-                className={`bg-game-bg border rounded-xl p-3 flex flex-col items-center gap-1.5 text-center relative ${
-                  isMe ? "border-game-accent" : "border-game-border"
+                className={`bg-game-bg border edge-md p-3 flex flex-col items-center gap-1.5 text-center relative ${ isMe ? "border-game-accent" : "border-game-border"
                 } ${player.isReady && !isSpectator ? "border-green-600" : ""}`}>
 
-                <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl border-2"
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg sm:text-2xl border-2"
                   style={{ backgroundColor: avatarBgColor(player.nickname), borderColor: isPlayerHost ? "#f59e0b" : "transparent" }}>
                   {player.avatar}
                 </div>
@@ -216,15 +214,15 @@ export default function LobbyPage() {
           {Array.from({ length: Math.max(0, room.settings.maxPlayers - room.players.filter(p => p.isConnected).length) })
             .slice(0, 4).map((_, i) => (
               <div key={`empty-${i}`}
-                className="bg-game-bg/50 border border-dashed border-game-border rounded-xl p-3 flex flex-col items-center gap-2 opacity-30">
-                <div className="w-12 h-12 rounded-full bg-game-border flex items-center justify-center text-2xl">?</div>
+                className="bg-game-bg/50 border border-dashed border-game-border edge-md p-3 flex flex-col items-center gap-2 opacity-30">
+                <div className="w-12 h-12 rounded-full bg-game-border flex items-center justify-center text-lg sm:text-2xl">?</div>
                 <div className="text-xs text-gray-500">Waiting…</div>
               </div>
             ))}
         </div>
 
         {/* Settings */}
-        <div className="bg-game-bg rounded-xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 text-center text-sm">
+        <div className="well edge-md p-3 sm:p-4 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6 text-center text-sm">
           {[
             { label: "Rounds",     value: room.settings.rounds },
             { label: "Draw Time",  value: `${room.settings.drawTime}s` },
@@ -248,9 +246,7 @@ export default function LobbyPage() {
                 setLocalReady(next);   // optimistic update — instant UI response
                 setReady(next);        // emit to server
               }}
-              className={`w-full py-3 font-game text-xl rounded-xl transition-all hover:scale-105 active:scale-95 ${
-                localReady
-                  ? "bg-green-600 text-white hover:bg-green-500"
+              className={`w-full py-2.5 sm:py-3 font-game text-base sm:text-xl edge-md transition-all hover:scale-105 active:scale-95 ${ localReady ? "bg-green-600 text-white hover:bg-green-500"
                   : "bg-game-border text-white hover:bg-green-700"
               }`}>
               {localReady ? "✅ Ready!" : "Click when ready…"}
@@ -260,7 +256,7 @@ export default function LobbyPage() {
           {isHost && (
             <div>
               <button onClick={handleStart} disabled={!canStart}
-                className="w-full py-4 bg-game-accent text-white font-game text-2xl rounded-xl hover:bg-red-500 disabled:opacity-40 transition-all hover:scale-105 active:scale-95">
+                className="w-full py-2.5 sm:py-4 bg-game-accent text-white font-game border-2 border-[#ff6b81] shadow-[3px_4px_0_rgba(0,0,0,0.35)] text-lg sm:text-2xl edge-md hover:bg-red-500 disabled:opacity-40 transition-all hover:scale-105 active:scale-95">
                 {room.status === "finished" ? "🔄 Start New Game" : "🎮 Start Game"}
               </button>
               {startError && <p className="text-game-accent text-sm text-center mt-2">{startError}</p>}

@@ -39,12 +39,10 @@ export default function AchievementToast() {
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className="bg-game-card border border-yellow-500/60 rounded-xl px-4 py-3 shadow-2xl
-                     flex items-center gap-3 min-w-[240px] max-w-[300px]
-                     animate-slide-in pointer-events-auto"
+          className="bg-game-card border border-yellow-500/60 rounded-xl px-4 py-2.5 sm:py-3 shadow-2xl flex items-center gap-2 sm:gap-3 min-w-[240px] max-w-[300px] animate-slide-in pointer-events-auto"
           style={{ animation: "slideIn 0.3s ease-out" }}
         >
-          <div className="text-3xl shrink-0">{toast.achievement.icon}</div>
+          <div className="text-xl sm:text-3xl shrink-0">{toast.achievement.icon}</div>
           <div className="flex-1 min-w-0">
             <div className="text-yellow-400 font-bold text-xs uppercase tracking-wider mb-0.5">
               🏅 Achievement Unlocked!

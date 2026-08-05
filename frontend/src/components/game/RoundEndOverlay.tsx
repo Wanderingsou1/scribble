@@ -64,7 +64,7 @@ export default function RoundEndOverlay({ data }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)" }}
     >
-      <div className="bg-game-card border border-game-border rounded-2xl w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[92dvh]">
+      <div className="paper edge-lg w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[92dvh]">
         {/* Header */}
         <div className="px-3 sm:px-6 pt-4 sm:pt-5 pb-3 flex items-center justify-between gap-2">
           <div>
@@ -100,9 +100,7 @@ export default function RoundEndOverlay({ data }: Props) {
                     <button
                       key={s}
                       onClick={() => setReplaySpeed(s)}
-                      className={`px-2 py-0.5 rounded text-xs font-bold transition-all ${
-                        replaySpeed === s
-                          ? "bg-game-accent text-white"
+                      className={`px-2 py-0.5 rounded text-xs font-bold transition-all ${ replaySpeed === s ? "bg-game-accent text-white"
                           : "bg-game-border text-gray-400 hover:text-white"
                       }`}
                     >
@@ -139,7 +137,7 @@ export default function RoundEndOverlay({ data }: Props) {
             {data.scores.map((p, i) => (
               <div
                 key={p.id}
-                className="flex items-center gap-3 bg-game-bg rounded-xl px-3 py-2"
+                className="flex items-center gap-2 sm:gap-3 well edge-md px-3 py-2"
               >
                 <span className="text-sm w-6 text-center">
                   {i === 0
@@ -150,7 +148,7 @@ export default function RoundEndOverlay({ data }: Props) {
                         ? "🥉"
                         : `${i + 1}.`}
                 </span>
-                <span className="text-lg">{p.avatar}</span>
+                <span className="text-sm sm:text-lg">{p.avatar}</span>
                 <span className="flex-1 min-w-0 truncate text-white text-sm font-semibold">
                   {p.nickname}
                 </span>

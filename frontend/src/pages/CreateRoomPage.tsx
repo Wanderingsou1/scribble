@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGame } from "../contexts/GameContext";
+import SceneryCanvas from "../components/ui/SceneryCanvas";
 
 type Difficulty = "all" | "easy" | "medium" | "hard";
 
@@ -54,9 +55,10 @@ export default function CreateRoomPage() {
   };
 
   const Setting = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div className="flex items-center justify-between gap-4">
-      <span className="text-gray-300 font-semibold text-sm w-36 shrink-0">{label}</span>
-      {children}
+    <div className="flex items-center justify-between gap-2 sm:gap-4">
+      {/* Narrow label on phones — the controls need the width more than the copy does */}
+      <span className="text-gray-300 font-semibold text-xs sm:text-sm w-24 sm:w-36 shrink-0">{label}</span>
+      <div className="flex-1 min-w-0 flex justify-end">{children}</div>
     </div>
   );
 
@@ -68,15 +70,16 @@ export default function CreateRoomPage() {
   };
 
   return (
-    <div className="min-h-screen bg-game-bg flex items-center justify-center p-4">
-      <div className="bg-game-card border border-game-border rounded-2xl p-5 sm:p-8 w-full max-w-md shadow-2xl">
+    <div className="relative min-h-screen flex items-center justify-center p-3 sm:p-4">
+      <SceneryCanvas density="low" />
+      <div className="paper edge-lg taped relative anim-pop p-5 sm:p-8 w-full max-w-md shadow-2xl">
         <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-white mb-4 text-sm">← Back</button>
-        <h1 className="font-game text-game-accent text-3xl mb-6">Create Room</h1>
+        <h1 className="font-game text-game-accent text-xl sm:text-3xl mb-4 sm:mb-6">Create Room</h1>
 
-        <div className="space-y-4">
+        <div className="space-y-2.5 sm:space-y-4">
           {/* Max Players */}
           <Setting label="Max Players">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full min-w-0">
               <input type="range" min={2} max={20} value={maxPlayers}
                 onChange={e => setMaxPlayers(+e.target.value)}
                 className="flex-1 accent-game-accent" />
@@ -86,7 +89,7 @@ export default function CreateRoomPage() {
 
           {/* Rounds */}
           <Setting label="Rounds">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full min-w-0">
               <input type="range" min={2} max={10} value={rounds}
                 onChange={e => setRounds(+e.target.value)}
                 className="flex-1 accent-game-accent" />
@@ -96,7 +99,7 @@ export default function CreateRoomPage() {
 
           {/* Draw Time */}
           <Setting label="Draw Time (s)">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full min-w-0">
               <input type="range" min={15} max={240} step={5} value={drawTime}
                 onChange={e => setDrawTime(+e.target.value)}
                 className="flex-1 accent-game-accent" />
@@ -106,7 +109,7 @@ export default function CreateRoomPage() {
 
           {/* Word Choices */}
           <Setting label="Word Choices">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full min-w-0">
               <input type="range" min={1} max={5} value={wordCount}
                 onChange={e => setWordCount(+e.target.value)}
                 className="flex-1 accent-game-accent" />
@@ -116,11 +119,10 @@ export default function CreateRoomPage() {
 
           {/* Difficulty */}
           <Setting label="Difficulty">
-            <div className="flex gap-1">
+            <div className="flex gap-1 flex-wrap justify-end">
               {(["all","easy","medium","hard"] as Difficulty[]).map(d => (
                 <button key={d} onClick={() => setDifficulty(d)}
-                  className={`px-2 py-1 rounded-lg text-xs font-bold capitalize transition-all ${
-                    difficulty === d ? diffColors[d] : "bg-game-border text-gray-400 hover:text-white"
+                  className={`px-1.5 sm:px-2 py-1 edge-sm text-xs font-bold capitalize transition-all ${ difficulty === d ? diffColors[d] : "bg-game-border text-gray-400 hover:text-white"
                   }`}>
                   {d}
                 </button>
@@ -131,8 +133,7 @@ export default function CreateRoomPage() {
           {/* Hints */}
           <Setting label="Hints">
             <button onClick={() => setHintsEnabled(!hintsEnabled)}
-              className={`px-4 py-1.5 rounded-lg font-bold text-sm transition-all ${
-                hintsEnabled ? "bg-green-600 text-white" : "bg-game-border text-gray-400"
+              className={`px-4 py-1.5 rounded-lg font-bold text-sm transition-all ${ hintsEnabled ? "bg-green-600 text-white" : "bg-game-border text-gray-400"
               }`}>
               {hintsEnabled ? "On" : "Off"}
             </button>
@@ -141,8 +142,7 @@ export default function CreateRoomPage() {
           {/* Private */}
           <Setting label="Visibility">
             <button onClick={() => setIsPrivate(!isPrivate)}
-              className={`px-4 py-1.5 rounded-lg font-bold text-sm transition-all ${
-                isPrivate ? "bg-game-accent text-white" : "bg-game-border text-gray-400"
+              className={`px-4 py-1.5 rounded-lg font-bold text-sm transition-all ${ isPrivate ? "bg-game-accent text-white" : "bg-game-border text-gray-400"
               }`}>
               {isPrivate ? "Private 🔒" : "Public 🌐"}
             </button>
@@ -150,7 +150,7 @@ export default function CreateRoomPage() {
 
           {/* Private passcode note */}
           {isPrivate && (
-            <div className="bg-yellow-900/20 border border-yellow-800/40 rounded-xl px-4 py-3 text-sm">
+            <div className="bg-yellow-900/20 border border-yellow-800/40 edge-md px-4 py-2.5 sm:py-3 text-sm">
               <div className="flex items-center gap-2 text-yellow-400 font-semibold mb-1">
                 🔒 Private Room
               </div>
@@ -178,7 +178,7 @@ export default function CreateRoomPage() {
                   onChange={e => setCustomWordsRaw(e.target.value)}
                   placeholder="apple, rocket ship, dancing, eiffel tower…"
                   rows={3}
-                  className="w-full bg-game-bg border border-game-border rounded-xl px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-game-accent resize-none"
+                  className="w-full well edge-md px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-game-accent resize-none"
                 />
                 <p className="text-gray-500 text-xs mt-1">
                   Separate with commas · {customWords.length} word{customWords.length !== 1 ? "s" : ""} added
@@ -194,7 +194,7 @@ export default function CreateRoomPage() {
         {error && <p className="text-game-accent text-sm mt-3">{error}</p>}
 
         <button onClick={handleCreate} disabled={loading}
-          className="mt-6 w-full py-3 bg-game-accent text-white font-game text-xl rounded-xl hover:bg-red-500 disabled:opacity-60 transition-all hover:scale-105 active:scale-95">
+          className="mt-4 sm:mt-6 w-full py-2.5 sm:py-3 bg-game-accent text-white font-game border-2 border-[#ff6b81] shadow-[3px_4px_0_rgba(0,0,0,0.35)] text-base sm:text-xl edge-md hover:bg-red-500 disabled:opacity-60 transition-all hover:scale-105 active:scale-95">
           {loading ? "Creating…" : "🚀 Create Room"}
         </button>
       </div>
