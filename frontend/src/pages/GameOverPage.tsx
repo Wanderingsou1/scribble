@@ -8,7 +8,7 @@ const MEDALS = ["🥇", "🥈", "🥉"];
 
 export default function GameOverPage() {
   const navigate = useNavigate();
-  const { gameOver, leaderboard, room, isHost, resetForNewGame, fullReset, redirectTo, clearRedirect } = useGame();
+  const { gameOver, leaderboard, room, isHost, playerId, resetForNewGame, fullReset, redirectTo, clearRedirect } = useGame();
   const handleLeaderboard = () => navigate("/leaderboard");
   const handleHistory = () => navigate(`/history?player=${playerId || ""}`);
 
