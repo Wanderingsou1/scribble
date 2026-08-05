@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGame } from "../contexts/GameContext";
 import { randomAvatar, AVATARS, avatarBgColor } from "../utils/avatars";
+import SceneryCanvas from "../components/ui/SceneryCanvas";
 
 const BACKEND_URL =
   ((import.meta as any).env?.VITE_BACKEND_URL as string) ||
@@ -95,17 +96,18 @@ export default function PublicRoomsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-game-bg p-4">
+    <div className="relative min-h-screen p-3 sm:p-4">
+      <SceneryCanvas density="low" />
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-5 pt-3">
+        <div className="flex items-center gap-2 sm:gap-3 mb-5 pt-3">
           <button
             onClick={() => navigate("/")}
             className="text-gray-400 hover:text-white text-sm"
           >
             ← Back
           </button>
-          <h1 className="font-game text-game-accent text-3xl">Public Rooms</h1>
+          <h1 className="font-game text-game-accent text-xl sm:text-3xl">Public Rooms</h1>
           <button
             onClick={fetchRooms}
             className="ml-auto text-gray-400 hover:text-white text-sm px-3 py-1 rounded-lg border border-game-border hover:border-game-accent transition-all"
@@ -115,10 +117,10 @@ export default function PublicRoomsPage() {
         </div>
 
         {/* Identity bar */}
-        <div className="bg-game-card border border-game-border rounded-2xl p-4 mb-5 flex items-center gap-3 flex-wrap">
+        <div className="paper edge-lg p-3 sm:p-4 mb-5 flex items-center gap-2 sm:gap-3 flex-wrap">
           <button
             onClick={() => setShowAvatars((s) => !s)}
-            className="w-12 h-12 rounded-full bg-game-bg border-2 border-game-border hover:border-game-accent text-2xl flex items-center justify-center transition-all shrink-0"
+            className="w-12 h-12 rounded-full bg-game-bg border-2 border-game-border hover:border-game-accent text-lg sm:text-2xl flex items-center justify-center transition-all shrink-0"
           >
             {avatar}
           </button>
@@ -126,19 +128,19 @@ export default function PublicRoomsPage() {
             value={nickname}
             onChange={(e) => setNickname(e.target.value.slice(0, 20))}
             placeholder="Your nickname to join…"
-            className="flex-1 min-w-[150px] bg-game-bg border-2 border-game-border rounded-xl px-4 py-2 text-white font-semibold placeholder-gray-500 focus:outline-none focus:border-game-accent"
+            className="flex-1 min-w-[150px] well edge-md px-4 py-2 text-white font-semibold placeholder-gray-500 focus:outline-none focus:border-game-accent"
           />
           <button
             onClick={handleQuickJoin}
             disabled={!canPlay || rooms.length === 0}
-            className="px-5 py-2 bg-game-accent text-white font-game text-lg rounded-xl hover:bg-red-500 disabled:opacity-40 transition-all shrink-0"
+            className="px-5 py-2 bg-game-accent text-white font-game border-2 border-[#ff6b81] shadow-[3px_4px_0_rgba(0,0,0,0.35)] text-sm sm:text-lg edge-md hover:bg-red-500 disabled:opacity-40 transition-all shrink-0"
           >
             ⚡ Quick Join
           </button>
         </div>
 
         {showAvatars && (
-          <div className="bg-game-card border border-game-border rounded-xl p-3 mb-4 grid grid-cols-8 gap-1.5">
+          <div className="paper edge-md p-3 mb-4 grid grid-cols-8 gap-1.5">
             {AVATARS.map((a) => (
               <button
                 key={a}
@@ -146,7 +148,7 @@ export default function PublicRoomsPage() {
                   setAvatar(a);
                   setShowAvatars(false);
                 }}
-                className={`text-2xl p-1 rounded-lg hover:bg-game-border transition-all ${avatar === a ? "bg-game-border" : ""}`}
+                className={`text-lg sm:text-2xl p-1 rounded-lg hover:bg-game-border transition-all ${avatar === a ? "bg-game-border" : ""}`}
               >
                 {a}
               </button>
@@ -155,7 +157,7 @@ export default function PublicRoomsPage() {
         )}
 
         {error && (
-          <div className="bg-red-900/30 border border-red-700 rounded-xl px-4 py-2 text-red-400 text-sm mb-4">
+          <div className="bg-red-900/30 border border-red-700 edge-md px-4 py-2 text-red-400 text-sm mb-4">
             {error}
           </div>
         )}
@@ -167,8 +169,8 @@ export default function PublicRoomsPage() {
           </div>
         ) : rooms.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-5xl mb-4">🎨</div>
-            <div className="text-gray-300 font-semibold text-lg mb-1">
+            <div className="text-3xl sm:text-5xl mb-4">🎨</div>
+            <div className="text-gray-300 font-semibold text-sm sm:text-lg mb-1">
               No open rooms
             </div>
             <p className="text-gray-500 text-sm mb-5">
@@ -182,7 +184,7 @@ export default function PublicRoomsPage() {
                     : "/",
                 )
               }
-              className="px-6 py-3 bg-game-accent text-white font-game text-lg rounded-xl hover:bg-red-500 transition-all"
+              className="px-4 sm:px-6 py-2.5 sm:py-3 bg-game-accent text-white font-game border-2 border-[#ff6b81] shadow-[3px_4px_0_rgba(0,0,0,0.35)] text-sm sm:text-lg edge-md hover:bg-red-500 transition-all"
             >
               🏠 Create Room
             </button>
@@ -201,11 +203,11 @@ export default function PublicRoomsPage() {
               return (
                 <div
                   key={room.roomCode}
-                  className="bg-game-card border border-game-border rounded-2xl p-4 flex items-center gap-4 hover:border-game-accent/50 transition-all"
+                  className="paper edge-lg p-3 sm:p-4 flex items-center gap-2.5 sm:gap-4 hover:border-game-accent/50 transition-all"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-game text-white text-lg tracking-widest">
+                      <span className="font-game text-white text-sm sm:text-lg tracking-widest">
                         {room.roomCode}
                       </span>
                       {isFull && (
@@ -260,7 +262,7 @@ export default function PublicRoomsPage() {
                   <button
                     onClick={() => handleJoin(room.roomCode)}
                     disabled={isFull || !canPlay || joining === room.roomCode}
-                    className="px-5 py-2.5 bg-game-accent text-white font-game text-lg rounded-xl hover:bg-red-500 disabled:opacity-40 transition-all shrink-0"
+                    className="px-5 py-2.5 bg-game-accent text-white font-game border-2 border-[#ff6b81] shadow-[3px_4px_0_rgba(0,0,0,0.35)] text-sm sm:text-lg edge-md hover:bg-red-500 disabled:opacity-40 transition-all shrink-0"
                   >
                     {joining === room.roomCode
                       ? "…"

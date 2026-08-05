@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGame } from "../contexts/GameContext";
 import { randomAvatar, AVATARS } from "../utils/avatars";
 import { getSocket } from "../utils/socket";
+import SceneryCanvas from "../components/ui/SceneryCanvas";
 
 const BACKEND =
   ((import.meta as any).env?.VITE_BACKEND_URL as string) ||
@@ -50,11 +51,7 @@ const PasscodeInput = memo(function PasscodeInput({
         onKeyDown={(e) => {
           if (e.key === "Enter") onEnter();
         }}
-        className="w-full bg-game-bg border-2 border-game-border rounded-xl
-                   px-4 py-2.5 text-white font-game text-xl tracking-widest
-                   placeholder-gray-500 placeholder:text-sm placeholder:font-sans
-                   placeholder:tracking-normal focus:outline-none focus:border-yellow-500
-                   uppercase text-center"
+        className="w-full well edge-md px-4 py-2.5 text-white font-game text-base sm:text-xl tracking-widest placeholder-gray-500 placeholder:text-sm placeholder:font-sans placeholder:tracking-normal focus:outline-none focus:border-yellow-500 uppercase text-center"
       />
       <p className="text-gray-500 text-xs mt-1 text-center">
         Ask the room host for the passcode
@@ -160,15 +157,16 @@ export default function JoinRoomPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-game-bg flex items-center justify-center p-4">
-      <div className="bg-game-card border border-game-border rounded-2xl p-8 w-full max-w-sm shadow-2xl">
+    <div className="relative min-h-screen flex items-center justify-center p-3 sm:p-4">
+      <SceneryCanvas density="low" />
+      <div className="paper edge-lg p-4 sm:p-8 w-full max-w-sm shadow-2xl">
         <button
           onClick={() => navigate("/")}
           className="text-gray-400 hover:text-white mb-4 text-sm"
         >
           ← Back
         </button>
-        <h1 className="font-game text-game-accent text-3xl mb-2">Join Room</h1>
+        <h1 className="font-game text-game-accent text-xl sm:text-3xl mb-2">Join Room</h1>
 
         {arrivedViaLink && (
           <p className="text-gray-400 text-sm mb-5">
@@ -184,12 +182,10 @@ export default function JoinRoomPage() {
           <label className="text-gray-400 text-xs mb-1 block">
             Your nickname
           </label>
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <button
               onClick={() => setShowAvatars((s) => !s)}
-              className="w-12 h-12 rounded-full bg-game-bg border-2 border-game-border
-                         hover:border-game-accent text-2xl flex items-center
-                         justify-center transition-all shrink-0"
+              className="w-12 h-12 rounded-full bg-game-bg border-2 border-game-border hover:border-game-accent text-lg sm:text-2xl flex items-center justify-center transition-all shrink-0"
             >
               {avatar}
             </button>
@@ -199,16 +195,14 @@ export default function JoinRoomPage() {
               placeholder="Enter nickname…"
               maxLength={20}
               autoFocus
-              className="flex-1 bg-game-bg border-2 border-game-border rounded-xl
-                         px-4 py-2.5 text-white font-semibold placeholder-gray-500
-                         focus:outline-none focus:border-game-accent"
+              className="flex-1 well edge-md px-4 py-2.5 text-white font-semibold placeholder-gray-500 focus:outline-none focus:border-game-accent"
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleJoin();
               }}
             />
           </div>
           {showAvatars && (
-            <div className="grid grid-cols-8 gap-1 p-2 bg-game-bg rounded-xl border border-game-border mb-2">
+            <div className="grid grid-cols-8 gap-1 p-2 well edge-md border border-game-border mb-2">
               {AVATARS.map((a) => (
                 <button
                   key={a}
@@ -216,7 +210,7 @@ export default function JoinRoomPage() {
                     setAvatar(a);
                     setShowAvatars(false);
                   }}
-                  className={`text-xl p-1 rounded hover:bg-game-border ${avatar === a ? "bg-game-border" : ""}`}
+                  className={`text-base sm:text-xl p-1 rounded hover:bg-game-border ${avatar === a ? "bg-game-border" : ""}`}
                 >
                   {a}
                 </button>
@@ -238,10 +232,7 @@ export default function JoinRoomPage() {
               }
               placeholder="XXXXXX"
               maxLength={6}
-              className="w-full bg-game-bg border-2 border-game-border rounded-xl
-                         px-4 py-3 text-white font-game text-2xl placeholder-gray-500
-                         focus:outline-none focus:border-game-accent text-center
-                         tracking-widest uppercase"
+              className="w-full well edge-md px-4 py-2.5 sm:py-3 text-white font-game text-lg sm:text-2xl placeholder-gray-500 focus:outline-none focus:border-game-accent text-center tracking-widest uppercase"
             />
           </div>
         )}
@@ -257,9 +248,7 @@ export default function JoinRoomPage() {
         <div className="mb-4">
           <button
             onClick={() => setAsSpectator((s) => !s)}
-            className={`w-full py-2 rounded-xl text-sm font-semibold border transition-all ${
-              asSpectator
-                ? "bg-purple-700/30 border-purple-600 text-purple-300"
+            className={`w-full py-2 edge-md text-sm font-semibold border transition-all ${ asSpectator ? "bg-purple-700/30 border-purple-600 text-purple-300"
                 : "border-game-border text-gray-400 hover:border-purple-600 hover:text-purple-400"
             }`}
           >
@@ -279,9 +268,7 @@ export default function JoinRoomPage() {
         <button
           onClick={handleJoin}
           disabled={loading || !canJoin}
-          className="w-full py-3 bg-game-accent text-white font-game text-xl
-                     rounded-xl hover:bg-red-500 disabled:opacity-40 transition-all
-                     hover:scale-105 active:scale-95"
+          className="w-full py-2.5 sm:py-3 bg-game-accent text-white font-game border-2 border-[#ff6b81] shadow-[3px_4px_0_rgba(0,0,0,0.35)] text-base sm:text-xl edge-md hover:bg-red-500 disabled:opacity-40 transition-all hover:scale-105 active:scale-95"
         >
           {loading
             ? "Joining…"

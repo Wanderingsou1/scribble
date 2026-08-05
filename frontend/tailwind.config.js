@@ -15,9 +15,9 @@ export default {
           700: "#92400e",
         },
         game: {
-          bg: "#1a1a2e",
-          card: "#16213e",
-          border: "#0f3460",
+          bg: "#151a2e",
+          card: "#1e2745",
+          border: "#2c3a63",
           accent: "#e94560",
           success: "#4ade80",
           warning: "#fbbf24",
