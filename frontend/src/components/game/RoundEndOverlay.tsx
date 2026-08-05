@@ -61,25 +61,25 @@ export default function RoundEndOverlay({ data }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)" }}
     >
-      <div className="bg-game-card border border-game-border rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden">
+      <div className="bg-game-card border border-game-border rounded-2xl w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[92dvh]">
         {/* Header */}
-        <div className="px-6 pt-5 pb-3 flex items-center justify-between">
+        <div className="px-3 sm:px-6 pt-4 sm:pt-5 pb-3 flex items-center justify-between gap-2">
           <div>
             <div className="text-gray-400 text-xs uppercase tracking-widest mb-1">
               {data.skipped ? "Round Skipped" : "Round Over"}
             </div>
-            <div className="font-game text-white text-2xl">
+            <div className="font-game text-white text-lg sm:text-2xl min-w-0 break-words">
               The word was{" "}
               <span className="text-game-accent tracking-widest">
                 {data.word}
               </span>
             </div>
           </div>
-          <div className="flex flex-col items-center">
-            <div className="font-game text-yellow-400 text-3xl">
+          <div className="flex flex-col items-center shrink-0">
+            <div className="font-game text-yellow-400 text-2xl sm:text-3xl">
               {countdown}
             </div>
             <div className="text-gray-500 text-xs">next round</div>
@@ -88,7 +88,7 @@ export default function RoundEndOverlay({ data }: Props) {
 
         {/* Drawing replay */}
         {hasStrokes && (
-          <div className="px-4 pb-3">
+          <div className="px-2 sm:px-4 pb-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400 text-xs flex items-center gap-1">
                 🎬 Drawing Replay
@@ -115,7 +115,7 @@ export default function RoundEndOverlay({ data }: Props) {
                   className="px-2 py-0.5 rounded text-xs font-bold bg-game-border text-gray-300 hover:bg-green-700/60 transition-all"
                   title="Save drawing as PNG"
                 >
-                  💾 Save
+                  💾<span className="hidden sm:inline"> Save</span>
                 </button>
               </div>
             </div>
@@ -131,11 +131,11 @@ export default function RoundEndOverlay({ data }: Props) {
         )}
 
         {/* Scores */}
-        <div className="px-4 pb-5">
+        <div className="px-2 sm:px-4 pb-4 sm:pb-5">
           <div className="text-gray-500 text-xs uppercase tracking-wider mb-2">
             Scores
           </div>
-          <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
+          <div className="flex flex-col gap-1.5 max-h-36 sm:max-h-40 overflow-y-auto">
             {data.scores.map((p, i) => (
               <div
                 key={p.id}
@@ -151,7 +151,7 @@ export default function RoundEndOverlay({ data }: Props) {
                         : `${i + 1}.`}
                 </span>
                 <span className="text-lg">{p.avatar}</span>
-                <span className="flex-1 text-white text-sm font-semibold">
+                <span className="flex-1 min-w-0 truncate text-white text-sm font-semibold">
                   {p.nickname}
                 </span>
                 <span className="text-yellow-400 font-bold text-sm">

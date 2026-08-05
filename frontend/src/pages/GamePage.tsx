@@ -113,16 +113,16 @@ export default function GamePage() {
               getSocket().emit("vote_skip", {});
             }}
             disabled={hasVotedSkip}
-            className={`hidden sm:flex items-center gap-1 px-2 py-1 rounded text-xs font-bold border transition-all shrink-0 ${
+            className={`flex items-center gap-1 px-2 py-1.5 rounded text-xs font-bold border transition-all shrink-0 ${
               hasVotedSkip
                 ? "border-yellow-700 text-yellow-500 bg-yellow-900/20"
                 : "border-game-border text-gray-400 hover:border-yellow-500 hover:text-yellow-400"
             }`}
             title="Vote to skip this drawer"
           >
-            ⏭ Skip{" "}
+            ⏭<span className="hidden sm:inline"> Skip</span>
             {skipVotes.needed > 0
-              ? `(${skipVotes.votes}/${skipVotes.needed})`
+              ? ` ${skipVotes.votes}/${skipVotes.needed}`
               : ""}
           </button>
         )}
@@ -130,7 +130,7 @@ export default function GamePage() {
         {/* Mobile: players toggle only */}
         <button
           onClick={() => setShowPlayers((s) => !s)}
-          className={`lg:hidden px-2 py-1 rounded text-xs font-bold border transition-all shrink-0 ${
+          className={`lg:hidden px-2 py-1.5 rounded text-xs font-bold border transition-all shrink-0 ${
             showPlayers
               ? "bg-game-accent border-game-accent text-white"
               : "border-game-border text-gray-400"
@@ -144,38 +144,55 @@ export default function GamePage() {
             fullReset();
             navigate("/");
           }}
-          className="px-2 py-1 rounded text-xs border border-game-border text-gray-400 hover:border-red-500 hover:text-red-400 transition-all shrink-0"
+          className="px-2 py-1.5 rounded text-xs border border-game-border text-gray-400 hover:border-red-500 hover:text-red-400 transition-all shrink-0"
         >
           Exit
         </button>
       </div>
 
-      {/* ── MOBILE (< lg): scroll page — canvas on top, chat below ── */}
-      <div className="lg:hidden flex-1 overflow-y-auto">
-        {/* Players collapse */}
+      {/* ── MOBILE (< lg): everything fits the viewport, no page scroll ── */}
+      <div className="lg:hidden relative flex-1 min-h-0 flex flex-col gap-1.5 p-2 overflow-hidden">
+        {/* Players — overlay sheet so it never pushes the canvas off screen */}
         {showPlayers && (
-          <div className="border-b border-game-border p-2">
-            <PlayerList
-              players={game.players}
-              currentDrawerId={game.currentDrawerId}
-              hostId={room.hostId}
-              myId={playerId}
-              showScores
+          <>
+            <div
+              className="absolute inset-0 z-20 bg-black/50"
+              onClick={() => setShowPlayers(false)}
             />
-          </div>
+            <div className="absolute z-30 top-0 left-0 right-0 max-h-[70%] overflow-y-auto
+                            bg-game-card border-b border-game-border rounded-b-xl p-2 shadow-2xl">
+              <PlayerList
+                players={game.players}
+                currentDrawerId={game.currentDrawerId}
+                hostId={room.hostId}
+                myId={playerId}
+                showScores
+              />
+              <button
+                onClick={() => setShowPlayers(false)}
+                className="w-full mt-2 py-2 rounded-lg text-xs font-bold bg-game-border text-gray-300"
+              >
+                Close
+              </button>
+            </div>
+          </>
         )}
 
-        {/* Canvas */}
-        <div className="p-2">
+        {/* Canvas + toolbar — takes the larger share, shrinks to fit */}
+        <div className="flex-[3] min-h-0 flex flex-col">
           <DrawingCanvas
             isDrawer={isDrawer}
             word={isDrawer ? currentWord : undefined}
             hint={!isDrawer ? currentHint : undefined}
+            fitHeight
           />
         </div>
 
-        {/* Chat — always visible below canvas, 280px tall, scrollable inside */}
-        <div className="px-2 pb-3" style={{ height: 300 }}>
+        {/* Chat — always visible, scrolls internally. The drawer needs less of
+            it (guesses are hidden from them anyway) so the canvas gets more. */}
+        <div
+          className={`min-w-0 ${isDrawer ? "flex-1 min-h-[96px]" : "flex-[2] min-h-[132px]"}`}
+        >
           <ChatPanel isDrawer={isDrawer} />
         </div>
       </div>

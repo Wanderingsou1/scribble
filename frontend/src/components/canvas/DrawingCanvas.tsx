@@ -75,12 +75,12 @@ export default function DrawingCanvas({ isDrawer, word, hint, fitHeight = false 
     <div className={`flex flex-col gap-1 w-full ${fitHeight ? "h-full min-h-0" : ""}`}>
 
       {/* Word / hint bar */}
-      <div className="bg-game-card border border-game-border rounded-xl px-3 py-2
-                      text-center min-h-[44px] flex items-center justify-center shrink-0">
+      <div className="bg-game-card border border-game-border rounded-xl px-2 sm:px-3 py-1.5 sm:py-2
+                      text-center min-h-[36px] sm:min-h-[44px] flex items-center justify-center shrink-0 overflow-hidden">
         {isDrawer && word
-          ? <span className="text-game-accent font-game text-xl md:text-2xl tracking-widest">{word}</span>
+          ? <span className="text-game-accent font-game text-lg sm:text-xl md:text-2xl tracking-wider sm:tracking-widest break-all">{word}</span>
           : hint
-          ? <span className="text-white font-game text-xl md:text-2xl tracking-[0.3em]">{hint}</span>
+          ? <span className="text-white font-game text-lg sm:text-xl md:text-2xl tracking-[0.15em] sm:tracking-[0.3em] break-all">{hint}</span>
           : <span className="text-gray-400 text-sm">Waiting for word…</span>
         }
       </div>
@@ -124,11 +124,12 @@ export default function DrawingCanvas({ isDrawer, word, hint, fitHeight = false 
 
       {/* Toolbar — drawer only */}
       {isDrawer && (
-        <div className="bg-game-card border border-game-border rounded-xl p-2 shrink-0
-                        flex flex-wrap gap-2 items-center">
+        <div className="bg-game-card border border-game-border rounded-xl p-1.5 sm:p-2 shrink-0
+                        flex flex-col sm:flex-row sm:flex-wrap gap-1.5 sm:gap-2 sm:items-center">
 
-          {/* Colors */}
-          <div className="flex flex-wrap gap-1">
+          {/* Colors — two scrollable rows on phones, wrapping grid on desktop */}
+          <div className="grid grid-rows-2 grid-flow-col auto-cols-max gap-1 overflow-x-auto
+                          sm:flex sm:flex-wrap sm:overflow-visible">
             {COLORS.map(c => (
               <button key={c}
                 onClick={() => setSettings(s => ({
@@ -136,7 +137,7 @@ export default function DrawingCanvas({ isDrawer, word, hint, fitHeight = false 
                   tool: s.tool==="eraser" ? "pen" : s.tool,
                 }))}
                 title={c}
-                className={`w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 ${
+                className={`w-7 h-7 sm:w-6 sm:h-6 shrink-0 rounded-full border-2 transition-transform hover:scale-110 ${
                   settings.color===c && settings.tool!=="eraser"
                     ? "border-white scale-110 shadow-lg" : "border-transparent"
                 }`}
@@ -172,78 +173,79 @@ export default function DrawingCanvas({ isDrawer, word, hint, fitHeight = false 
 
           <div className="w-px h-6 bg-game-border hidden sm:block shrink-0" />
 
-          {/* Tools */}
-          <div className="flex gap-1 flex-wrap items-center">
+          {/* Tools — one horizontally scrollable row on phones */}
+          <div className="flex gap-1 items-center overflow-x-auto sm:flex-wrap sm:overflow-visible">
 
             <button
               onClick={() => setSettings(s => ({ ...s, tool:"pen" }))}
-              className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold transition-all ${
                 settings.tool==="pen" ? "bg-gray-600 text-white" : "bg-game-border text-gray-300 hover:bg-gray-600/50"
               }`}
-            >✏️ Pen</button>
+            >✏️<span className="hidden sm:inline"> Pen</span></button>
 
             <button
               onClick={() => setSettings(s => ({ ...s, tool:"eraser", size:20 }))}
-              className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold transition-all ${
                 settings.tool==="eraser" ? "bg-game-accent text-white" : "bg-game-border text-gray-300 hover:bg-game-accent/50"
               }`}
-            >🧹 Erase</button>
+            >🧹<span className="hidden sm:inline"> Erase</span></button>
 
             <button
               onClick={() => setSettings(s => ({ ...s, tool:"fill" }))}
-              className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold transition-all ${
                 settings.tool==="fill" ? "bg-blue-600 text-white" : "bg-game-border text-gray-300 hover:bg-blue-600/50"
               }`}
-            >🪣 Fill</button>
+            >🪣<span className="hidden sm:inline"> Fill</span></button>
 
             <button
               onClick={() => setSettings(s => ({ ...s, tool:"eyedropper" }))}
               title="Pick color from canvas"
-              className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold transition-all ${
                 settings.tool==="eyedropper" ? "bg-teal-600 text-white" : "bg-game-border text-gray-300 hover:bg-teal-600/50"
               }`}
-            >🩸 Pick</button>
+            >🩸<span className="hidden sm:inline"> Pick</span></button>
 
             <div className="w-px h-5 bg-game-border shrink-0" />
 
             {/* Shape tools */}
             {(["line","rect","circle"] as ShapeType[]).map(shape => {
-              const icons:Record<ShapeType,string> = { line:"╱ Line", rect:"▭ Rect", circle:"○ Circle" };
+              const icons:Record<ShapeType,string> = { line:"╱", rect:"▭", circle:"○" };
+              const labels:Record<ShapeType,string> = { line:" Line", rect:" Rect", circle:" Circle" };
               return (
                 <button key={shape}
                   onClick={() => setSettings(s => ({ ...s, tool:shape }))}
-                  className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+                  className={`shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold transition-all ${
                     settings.tool===shape ? "bg-purple-600 text-white" : "bg-game-border text-gray-300 hover:bg-purple-600/50"
                   }`}
-                >{icons[shape]}</button>
+                >{icons[shape]}<span className="hidden sm:inline">{labels[shape]}</span></button>
               );
             })}
 
             <div className="w-px h-5 bg-game-border shrink-0" />
 
             <button onClick={undoStroke} disabled={!canUndo} title="Undo (Ctrl+Z)"
-              className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold transition-all ${
                 canUndo ? "bg-game-border text-gray-300 hover:bg-yellow-600/50"
                         : "bg-game-border text-gray-600 cursor-not-allowed opacity-40"
               }`}
-            >↩ Undo</button>
+            >↩<span className="hidden sm:inline"> Undo</span></button>
 
             <button onClick={redoStroke} disabled={!canRedo} title="Redo (Ctrl+Y)"
-              className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold transition-all ${
                 canRedo ? "bg-game-border text-gray-300 hover:bg-green-600/50"
                         : "bg-game-border text-gray-600 cursor-not-allowed opacity-40"
               }`}
-            >↪ Redo</button>
+            >↪<span className="hidden sm:inline"> Redo</span></button>
 
             <button onClick={clearCanvas}
-              className="px-2 py-1 rounded-lg text-xs font-bold bg-game-border text-gray-300 hover:bg-red-600/50 transition-all"
-            >🗑️ Clear</button>
+              className="shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold bg-game-border text-gray-300 hover:bg-red-600/50 transition-all"
+            >🗑️<span className="hidden sm:inline"> Clear</span></button>
 
             <button
               onClick={() => saveDrawing(word ?? undefined)}
               title="Save drawing as PNG"
-              className="px-2 py-1 rounded-lg text-xs font-bold bg-game-border text-gray-300 hover:bg-green-700/60 transition-all"
-            >💾 Save</button>
+              className="shrink-0 px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-bold bg-game-border text-gray-300 hover:bg-green-700/60 transition-all"
+            >💾<span className="hidden sm:inline"> Save</span></button>
 
           </div>
 

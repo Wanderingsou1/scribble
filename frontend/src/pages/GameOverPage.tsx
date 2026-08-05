@@ -40,7 +40,7 @@ export default function GameOverPage() {
 
   return (
     <div className="min-h-screen bg-game-bg flex items-center justify-center p-4">
-      <div className="bg-game-card border border-game-border rounded-2xl p-8 w-full max-w-md shadow-2xl text-center">
+      <div className="bg-game-card border border-game-border rounded-2xl p-5 sm:p-8 w-full max-w-md shadow-2xl text-center">
 
         {winner && (
           <div className="mb-8">

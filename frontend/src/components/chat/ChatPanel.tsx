@@ -25,9 +25,9 @@ function MessageItem({ msg, isDrawer }: { msg: ChatMessage; isDrawer: boolean })
   }
 
   return (
-    <div className="flex items-start gap-1.5 px-2 py-0.5">
-      <span className="font-bold text-game-accent text-xs shrink-0">{msg.playerName}:</span>
-      <span className="text-gray-200 text-xs break-words leading-relaxed">{msg.text}</span>
+    <div className="flex items-start gap-1.5 px-2 py-0.5 min-w-0">
+      <span className="font-bold text-game-accent text-xs shrink-0 max-w-[40%] truncate">{msg.playerName}:</span>
+      <span className="text-gray-200 text-xs break-words min-w-0 leading-relaxed">{msg.text}</span>
     </div>
   );
 }
@@ -88,12 +88,18 @@ export default function ChatPanel({ isDrawer = false }: ChatPanelProps) {
           onChange={(e) => setInput(e.target.value)}
           placeholder={placeholder}
           maxLength={100}
-          className="flex-1 bg-game-bg border border-game-border rounded-lg px-3 py-1.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-game-accent transition-colors"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="none"
+          enterKeyHint="send"
+          /* text-base (16px) on phones — anything smaller makes iOS Safari
+             zoom the whole page in when the field is focused. */
+          className="flex-1 min-w-0 bg-game-bg border border-game-border rounded-lg px-3 py-2 sm:py-1.5 text-white text-base sm:text-sm placeholder-gray-500 focus:outline-none focus:border-game-accent transition-colors"
         />
         <button
           type="submit"
           disabled={!input.trim()}
-          className="bg-game-accent text-white px-3 py-1.5 rounded-lg text-sm font-bold disabled:opacity-40 hover:bg-red-500 transition-colors shrink-0"
+          className="bg-game-accent text-white px-4 py-2 sm:px-3 sm:py-1.5 rounded-lg text-sm font-bold disabled:opacity-40 hover:bg-red-500 transition-colors shrink-0"
         >
           ↵
         </button>

@@ -12,9 +12,9 @@ export default function TimerBar({ timeLeft, totalTime }: TimerBarProps) {
   const urgent = percentage <= 25;
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3">
       <div
-        className={`font-game text-3xl tabular-nums w-16 text-right ${
+        className={`font-game text-xl sm:text-3xl tabular-nums w-8 sm:w-16 text-right ${
           urgent ? "text-game-accent animate-pulse" : "text-white"
         }`}
       >

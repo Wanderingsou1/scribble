@@ -22,10 +22,28 @@ body {
   min-height: 100vh;
 }
 
+/* Mobile: stop rubber-band scrolling and double-tap zoom fighting the canvas,
+   and keep horizontal scrollers from showing a scrollbar strip. */
+html, body {
+  overscroll-behavior: none;
+}
+body {
+  -webkit-text-size-adjust: 100%;
+}
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.overflow-x-auto::-webkit-scrollbar {
+  height: 4px;
+}
+
 /* Canvas touch prevention */
 canvas {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
 
 /* Smooth transitions everywhere */

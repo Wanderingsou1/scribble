@@ -23,7 +23,7 @@ export default function WordChooser() {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-game-card border-2 border-game-accent rounded-2xl p-8 max-w-lg w-full animate-bounce-in shadow-2xl">
+      <div className="bg-game-card border-2 border-game-accent rounded-2xl p-5 sm:p-8 max-w-lg w-full animate-bounce-in shadow-2xl">
         <div className="text-center mb-6">
           <div className="font-game text-game-accent text-2xl mb-1">Choose a word!</div>
           <div className="text-gray-400 text-sm">
@@ -31,12 +31,12 @@ export default function WordChooser() {
           </div>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid gap-2 sm:gap-3">
           {wordChoices.map((word) => (
             <button
               key={word}
               onClick={() => chooseWord(word)}
-              className="w-full py-4 px-6 bg-game-bg border-2 border-game-border rounded-xl text-white font-game text-2xl 
+              className="w-full py-3 sm:py-4 px-4 sm:px-6 bg-game-bg border-2 border-game-border rounded-xl text-white font-game text-xl sm:text-2xl break-words 
                          hover:border-game-accent hover:bg-game-accent/10 hover:text-game-accent 
                          transition-all duration-200 hover:scale-105 active:scale-95"
             >

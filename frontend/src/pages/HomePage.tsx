@@ -44,7 +44,7 @@ export default function HomePage() {
       </div>
 
       {/* Setup card */}
-      <div className="bg-game-card border border-game-border rounded-2xl p-8 w-full max-w-sm shadow-2xl">
+      <div className="bg-game-card border border-game-border rounded-2xl p-5 sm:p-8 w-full max-w-sm shadow-2xl">
         {/* Avatar picker */}
         <div className="flex items-center justify-center mb-5">
           <button
