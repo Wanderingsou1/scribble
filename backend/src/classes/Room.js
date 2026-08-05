@@ -209,12 +209,15 @@ class Room {
     if (activePlayers.length < 2) throw new Error("Need at least 2 players");
     if (this.status === "playing") throw new Error("Game already started");
 
-    // Check all NON-HOST players are ready (host starts instead of readying)
+    // Every NON-HOST player must be ready (the host starts instead of readying)
     const nonHostPlayers = activePlayers.filter((p) => p.id !== this.hostId);
-    const anyReady = nonHostPlayers.some((p) => p.isReady);
-    if (anyReady) {
-      const allReady = nonHostPlayers.every((p) => p.isReady);
-      if (!allReady) throw new Error("Not all players are ready yet");
+    const notReady = nonHostPlayers.filter((p) => !p.isReady);
+    if (notReady.length > 0) {
+      throw new Error(
+        notReady.length === 1
+          ? `${notReady[0].nickname} is not ready yet`
+          : `${notReady.length} players are not ready yet`,
+      );
     }
 
     this.status = "playing";

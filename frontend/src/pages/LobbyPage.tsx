@@ -84,7 +84,7 @@ export default function LobbyPage() {
     setTimeout(() => setCopiedPasscode(false), 2000);
   };
 
-  const canStart = activePlayers.length >= 2 && (room.status === "waiting" || room.status === "finished");
+  const canStart = activePlayers.length >= 2 && allReady && (room.status === "waiting" || room.status === "finished");
 
   const handleKick = (targetId: string) => {
     getSocket().emit("kick_player", { targetPlayerId: targetId }, (res: any) => {
@@ -264,8 +264,12 @@ export default function LobbyPage() {
                 {room.status === "finished" ? "🔄 Start New Game" : "🎮 Start Game"}
               </button>
               {startError && <p className="text-game-accent text-sm text-center mt-2">{startError}</p>}
-              {!canStart && activePlayers.length < 2 && (
-                <p className="text-center text-gray-400 text-sm mt-2">Need at least 2 players</p>
+              {!canStart && (
+                <p className="text-center text-gray-400 text-sm mt-2">
+                  {activePlayers.length < 2
+                    ? "Need at least 2 players"
+                    : `Waiting for ${nonHostPlayers.filter(p => !p.isReady).length} player(s) to ready up…`}
+                </p>
               )}
             </div>
           )}

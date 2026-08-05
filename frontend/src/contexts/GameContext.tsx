@@ -284,6 +284,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
               currentDrawerId: payload.drawerId,
               currentDrawerName: payload.drawerName,
               drawTime: payload.drawTime,
+              // New turn — clear the old deadline so the timer shows a full
+              // bar while the drawer picks a word.
+              roundStartTime: null,
             }
           : g,
       );
@@ -312,13 +315,19 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         setCurrentWord(word);
         setCurrentHint(hint);
         setWordChoices(null);
-        setGame((g) => (g ? { ...g, phase: "drawing" } : g));
+        // Anchor the countdown on the client clock at the moment the draw
+        // phase actually starts — avoids server/client clock skew.
+        setGame((g) =>
+          g ? { ...g, phase: "drawing", roundStartTime: Date.now() } : g,
+        );
       },
     );
     socket.on("word_hint", ({ hint }: { hint: string }) => {
       setCurrentHint(hint);
       setWordChoices(null);
-      setGame((g) => (g ? { ...g, phase: "drawing" } : g));
+      setGame((g) =>
+        g ? { ...g, phase: "drawing", roundStartTime: Date.now() } : g,
+      );
     });
     socket.on("hint_update", ({ hint }: { hint: string }) =>
       setCurrentHint(hint),

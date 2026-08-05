@@ -58,7 +58,11 @@ export default function GamePage() {
   const isDrawer = game?.currentDrawerId === playerId;
   const isDrawing = game?.phase === "drawing";
   const drawTime = game?.drawTime || 80;
-  const { timeLeft } = useTimer(drawTime, isDrawing && !wordChoices);
+  const { timeLeft } = useTimer(
+    drawTime,
+    isDrawing && !wordChoices,
+    game?.roundStartTime,
+  );
 
   if (!room || !game) return null;
 
@@ -189,12 +193,14 @@ export default function GamePage() {
           />
         </div>
 
-        {/* Canvas column — flex-1, toolbar always visible */}
-        <div className="flex-1 min-w-0 flex flex-col overflow-y-auto">
+        {/* Canvas column — canvas shrinks to fit so the toolbar is always
+            on screen without scrolling */}
+        <div className="flex-1 min-w-0 flex flex-col min-h-0 overflow-hidden">
           <DrawingCanvas
             isDrawer={isDrawer}
             word={isDrawer ? currentWord : undefined}
             hint={!isDrawer ? currentHint : undefined}
+            fitHeight
           />
         </div>
 

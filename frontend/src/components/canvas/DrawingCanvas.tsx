@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCanvas } from "../../hooks/useCanvas";
 import type { ShapeType } from "../../types";
 
@@ -15,15 +15,40 @@ interface DrawingCanvasProps {
   isDrawer: boolean;
   word?: string | null;
   hint?: string | null;
+  /** Fill the parent's height and shrink the canvas so the toolbar stays
+   *  on screen without scrolling (desktop layout). */
+  fitHeight?: boolean;
 }
 
-export default function DrawingCanvas({ isDrawer, word, hint }: DrawingCanvasProps) {
+export default function DrawingCanvas({ isDrawer, word, hint, fitHeight = false }: DrawingCanvasProps) {
   const {
     canvasRef, previewCanvasRef,
     settings, setSettings,
     clearCanvas, undoStroke, redoStroke,
     canUndo, canRedo, saveDrawing,
   } = useCanvas({ isDrawer });
+
+  // Letterbox the 8:5 canvas into whatever space is left over after the word
+  // bar and toolbar have taken theirs — CSS alone can't clamp both axes of a
+  // fixed-ratio box, so measure the container instead.
+  const canvasAreaRef = useRef<HTMLDivElement>(null);
+  const [canvasBox, setCanvasBox] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    if (!fitHeight) return;
+    const el = canvasAreaRef.current;
+    if (!el) return;
+    const fit = () => {
+      const { width, height } = el.getBoundingClientRect();
+      if (width <= 0 || height <= 0) return;
+      const w = Math.min(width, height * (8 / 5));
+      setCanvasBox({ width: Math.floor(w), height: Math.floor(w * (5 / 8)) });
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fitHeight, isDrawer]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -47,7 +72,7 @@ export default function DrawingCanvas({ isDrawer, word, hint }: DrawingCanvasPro
   };
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className={`flex flex-col gap-1 w-full ${fitHeight ? "h-full min-h-0" : ""}`}>
 
       {/* Word / hint bar */}
       <div className="bg-game-card border border-game-border rounded-xl px-3 py-2
@@ -60,28 +85,41 @@ export default function DrawingCanvas({ isDrawer, word, hint }: DrawingCanvasPro
         }
       </div>
 
-      {/* Canvas stack */}
-      <div className="relative rounded-xl overflow-hidden border-2 border-game-border shadow-lg w-full shrink-0">
+      {/* Canvas stack — in fitHeight mode it is measured against the leftover
+          space so the toolbar below always stays in view. */}
+      <div
+        ref={canvasAreaRef}
+        className={fitHeight
+          ? "flex-1 min-h-0 flex items-center justify-center w-full"
+          : "w-full shrink-0"}
+      >
+        <div
+          className="relative rounded-xl overflow-hidden border-2 border-game-border shadow-lg"
+          style={fitHeight
+            ? { width: canvasBox.width, height: canvasBox.height }
+            : { width: "100%", aspectRatio: "8/5" }}
+        >
 
-        {/* Main canvas — drawing target, never receives pointer events (overlay does) */}
-        <canvas
-          ref={canvasRef}
-          width={800}
-          height={500}
-          className="block w-full bg-white pointer-events-none"
-          style={{ touchAction:"none", aspectRatio:"8/5" }}
-        />
+          {/* Main canvas — drawing target, never receives pointer events (overlay does) */}
+          <canvas
+            ref={canvasRef}
+            width={800}
+            height={500}
+            className="block w-full h-full bg-white pointer-events-none"
+            style={{ touchAction:"none" }}
+          />
 
-        {/* Overlay canvas — ALWAYS on top and always captures pointer events for drawer.
-            For non-drawers it is pointer-events-none so they can interact with chat etc.
-            useCanvas attaches all mouse/touch listeners here directly. */}
-        <canvas
-          ref={previewCanvasRef}
-          width={800}
-          height={500}
-          className={`absolute inset-0 w-full h-full ${isDrawer ? cursor() : "pointer-events-none"}`}
-          style={{ touchAction:"none", aspectRatio:"8/5" }}
-        />
+          {/* Overlay canvas — ALWAYS on top and always captures pointer events for drawer.
+              For non-drawers it is pointer-events-none so they can interact with chat etc.
+              useCanvas attaches all mouse/touch listeners here directly. */}
+          <canvas
+            ref={previewCanvasRef}
+            width={800}
+            height={500}
+            className={`absolute inset-0 w-full h-full ${isDrawer ? cursor() : "pointer-events-none"}`}
+            style={{ touchAction:"none" }}
+          />
+        </div>
       </div>
 
       {/* Toolbar — drawer only */}
